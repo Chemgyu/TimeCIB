@@ -33,11 +33,11 @@ def main():
     parser.add_argument("--d", "--dataset", dest="dataset", action="store", help="dataset that will be used.", choices=["hmnist", "rotated", "physionet", "beijing", "weather"], required=True)
     parser.add_argument("--m", "--model", dest="model_type", action="store", choices=["vae", "hivae", "gpvae", "timecib"], default='timecib')
     parser.add_argument("--p", "--prior", dest="prior_type", action="store", choices=["norm", "gp"], required=True)
-    parser.add_argument("--e", "--encoder", dest="encoder_type", action="store", choices=["diag", "joint", "band", "rnn"], required=True)
+    parser.add_argument("--e", "--encoder", dest="encoder_type", action="store", choices=["diag", "joint", "band", "rnn"], default='rnn')
     parser.add_argument("--l", "--lamda", dest="lamda", action="store", default=1.0, type=float)
     parser.add_argument("--b", "--beta", dest="beta", action="store", default=1.0, type=float)
     parser.add_argument("--dim", dest="latent_dim", action="store", default=32, type=int)
-    parser.add_argument("--s", "--sim_type", dest="sim_type", action="store", choices=["cauchy", "period", "uniform"], default="uniform")
+    parser.add_argument("--s", "--sim_type", dest="sim_type", action="store", choices=["cauchy", "period", "uniform"], default="cauchy")
     parser.add_argument("--dir", dest="dir", action="store", default="", type=str)
 
     parser.add_argument("--clen", dest="cont_length_scale", action="store", default=2.0, type=float)
@@ -77,8 +77,8 @@ def main():
     ###################################
     if args.dataset == "hmnist":
         args.batch_size      = getattr(args, "batch_size", 64) #64
-        if args.missingratio == None: args.datadir = getattr(args, "datadir", f"../data/hmnist/hmnist_{args.missingtype}.npz")
-        else: args.datadir = getattr(args, "datadir", f"../data/hmnist/hmnist_random_{args.missingratio}.npz")
+        if args.missingratio == None: args.datadir = getattr(args, "datadir", f"data/hmnist/hmnist_{args.missingtype}.npz")
+        else: args.datadir = getattr(args, "datadir", f"data/hmnist/hmnist_random_{args.missingratio}.npz")
         args.data_dim    = getattr(args, "data_dim", 784)
         args.binary      = getattr(args, "binary", True)
         args.time_length = getattr(args, "time_length", 10)
@@ -97,8 +97,8 @@ def main():
     
     elif args.dataset == "physionet":
         args.batch_size      = getattr(args, "batch_size", 256) #128
-        if args.missingratio == None: args.datadir = getattr(args, "datadir", "../data/physionet/physionet.npz")
-        else: args.datadir = getattr(args, "datadir", f"../data/physionet/physionet_random_{args.missingratio}.npz")
+        if args.missingratio == None: args.datadir = getattr(args, "datadir", "data/physionet/physionet.npz")
+        else: args.datadir = getattr(args, "datadir", f"data/physionet/physionet_random_{args.missingratio}.npz")
         args.data_dim    = getattr(args, "data_dim", 35)
         args.binary      = getattr(args, "binary", False)
         args.time_length = getattr(args, "time_length", 48)
