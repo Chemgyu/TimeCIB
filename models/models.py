@@ -348,7 +348,7 @@ class VAE(nn.Module):
             x_nott = torch.where(m_nott, x_replace, x_nott) # [B, T, D], the same shape of x.
         else:
             # For other VAE models.
-            x_nott, m_exist_nott = x, m_exist
+            x_nott, m_mask_nott = x, torch.tile(gen_mask_t(self.t, self.time_length), (self.batch_size, 1, self.input_dim)).to(self.device)
 
         if self.preprocessor is not None:
             # For the image datasets - HMNIST and SPRITES.

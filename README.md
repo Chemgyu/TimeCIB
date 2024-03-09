@@ -19,6 +19,8 @@ If you use this code or the models in your research, please cite the following p
 ## QuickStart
 First clone the repo `git clone https://github.com/Chemgyu/TimeCIB.git`
 
+We also use [wandb](https://wandb.ai/site) to track training: setup wandb account.
+
 
 ## Data Preparation
 Download data to `./data` using the following scripts: `bash data/load_{hmnist, physionet}.sh`. This will download five missing patterns of hmnist data, and physionet data.
