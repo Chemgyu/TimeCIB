@@ -8,12 +8,13 @@ class UnifiedDataset(torch.utils.data.Dataset):
     def __init__(self, train:bool, test:bool, args):
         data = np.load(args.datadir, allow_pickle=True)
         self.dataset = args.dataset
+        print([i for i in data.keys()])
         if not test: ## Train or Valid
             if train: ## Train
                 x_full = data['x_train_full']
                 x_miss = data['x_train_miss']
                 m_miss = data['m_train_miss']
-                m_artificial = data["m_train_artificial"]
+                if 'm_train_artificial' in data.keys(): m_artificial = data["m_train_artificial"]
                 y = data['y_train']
                 t = data['t_train']
                 
@@ -21,7 +22,7 @@ class UnifiedDataset(torch.utils.data.Dataset):
                 x_full = data["x_valid_full"]  # full for artificial missings
                 x_miss = data["x_valid_miss"]
                 m_miss = data["m_valid_miss"]
-                m_artificial = data["m_valid_artificial"]
+                if 'm_valid_artificial' in data.keys(): m_artificial = data["m_valid_artificial"]
                 y = data["y_valid"]
                 t = data['t_valid']
                 
@@ -29,7 +30,7 @@ class UnifiedDataset(torch.utils.data.Dataset):
             x_full = data['x_test_full']
             x_miss = data['x_test_miss']
             m_miss = data['m_test_miss']
-            m_artificial = data["m_test_artificial"]
+            if 'm_test_artificial' in data.keys(): m_artificial = data["m_test_artificial"]
             y = data['y_test']
             t = data['t_test']
         
