@@ -8,7 +8,6 @@ class UnifiedDataset(torch.utils.data.Dataset):
     def __init__(self, train:bool, test:bool, args):
         data = np.load(args.datadir, allow_pickle=True)
         self.dataset = args.dataset
-        print([i for i in data.keys()])
         if not test: ## Train or Valid
             if train: ## Train
                 x_full = data['x_train_full']

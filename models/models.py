@@ -212,7 +212,7 @@ class RNNEncoder(nn.Module):
 
     def forward(self, x, mask=None):
         x = self.position_enc(x)
-        x = torch.concatenate((x, mask.float()), dim=-1)
+        x = torch.concat((x, mask.float()), dim=-1)
         x, _ = self.net_rnn(x)
         mapped = self.net_nn(x)
 
@@ -330,6 +330,7 @@ class VAE(nn.Module):
         self.cont_period_scale = args.cont_period_scale
         self.cont_conf = args.cont_conf
         self.sim_type = args.sim_type
+        self.stochastic = True
 
         self.return_parts = args.return_parts
     
@@ -415,7 +416,6 @@ class VAE(nn.Module):
         if self.binary: x_z_mean = torch.round(x_z_mean)
         error = (torch.abs(x_z_mean - x_full).reshape(self.sample_size, self.time_length, self.input_dim))
         error = torch.where(m_mask, error, torch.zeros_like(error))
-        # error = torch.where(torch.tile(m_exist.unsqueeze(-1), (1,1,self.input_dim)), error, torch.zeros_like(error))
 
         mae = torch.sum(error)/ torch.sum(m_mask)
         mse = torch.sum(torch.square(error)) / torch.sum(m_mask)
@@ -437,7 +437,6 @@ class VAE(nn.Module):
         self.batch_size = len(x)
         m_exist = (t >= 0).bool()
         shape = x.shape
-        pz = self.get_prior()
         qz_x, qz_x_nott = self.encode(x, mask, m_exist)
         
         z = qz_x.rsample() 
@@ -448,12 +447,7 @@ class VAE(nn.Module):
 
         x_z = px_z.mean
         x_z_nott = px_z_nott.mean
-        # if self.binary: x_z = torch.round(x_z)
         x_z = x_z.reshape(shape)
-        # if self.cont_type in ["sum", "product"]: 
-        #     if self.preprocessor is not None:
-        #         x_z_nott = x_z_nott.reshape(self.batch_size * self.time_length, self.time_length, self.image_shape[0], self.image_shape[1], self.image_shape[2])
-        # else: 
         x_z_nott = x_z_nott.reshape(shape)        
         
         return x_z, x_z_nott
@@ -584,7 +578,7 @@ class GP_VAE(VAE):
                     multiplier = int(np.ceil(self.hidden_dim / self.kernel_scales))
                     total += multiplier
                 tiled_matrices.append(torch.tile(torch.unsqueeze(kernel_matrices[i], 0), (multiplier, 1, 1)))
-            kernel_matrix_tiled = torch.concatenate(tiled_matrices)
+            kernel_matrix_tiled = torch.concat(tiled_matrices)
             assert len(kernel_matrix_tiled) == self.hidden_dim
 
             mean = torch.zeros([self.sample_size, self.hidden_dim, self.time_length]) 
@@ -630,7 +624,7 @@ class TimeCIB(VAE):
                         multiplier = int(np.ceil(self.hidden_dim / self.kernel_scales))
                         total += multiplier
                     tiled_matrices.append(torch.tile(torch.unsqueeze(kernel_matrices[i], 0), (multiplier, 1, 1)))
-                kernel_matrix_tiled = torch.concatenate(tiled_matrices)
+                kernel_matrix_tiled = torch.concat(tiled_matrices)
                 assert len(kernel_matrix_tiled) == self.hidden_dim
 
                 mean = torch.zeros([self.sample_size, self.hidden_dim, self.time_length]) 

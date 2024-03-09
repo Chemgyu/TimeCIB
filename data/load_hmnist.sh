@@ -1,7 +1,7 @@
 # This code is adopted from GP-VAE: https://github.com/ratschlab/GP-VAE/blob/master/data/load_hmnist.sh
 # Each dataset consumes ~ 6.1 GB. (Total 30 GB for five datasets)
 
-DATA_DIR="data/raw/hmnist"
+DATA_DIR="data/hmnist/raw"
 mkdir -p ${DATA_DIR}
 
 wget https://www.dropbox.com/s/xzhelx89bzpkkvq/hmnist_mnar.npz?dl=1 -O ${DATA_DIR}/hmnist_mnar.npz

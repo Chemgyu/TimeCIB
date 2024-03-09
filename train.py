@@ -5,8 +5,6 @@ Script to train TimeCIB.
 """
 
 import os
-import sys
-import time
 from tqdm import tqdm
 
 import numpy as np
@@ -300,7 +298,6 @@ def main():
         if best_valid_renew or args.test:
             torch.save(model.state_dict(), os.path.join(wandb.run.dir, "model_best.pth"))
             # Get the reconstruction score (Reconstruct each timestep given all timesteps.)
-            # print("Getting reconstruction score...")
             test_loss, test_nll, test_kl, test_smi, test_mae, test_mse, test_rmse, test_mre, test_nll, test_mnll, test_auroc, num_samples, num_missing = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
             for idx, batch in enumerate(test_dataset.loader):
                 x_full, x_miss, m_miss, m_artificial, y, t= batch
@@ -329,10 +326,8 @@ def main():
 
             # Get the discriminative score (Classify timestep(hmnist) or timeseries(physionet).)
             if args.num_classes > 0:
-                # print("Getting discriminative score...")
                 best_valid_renew = False
                 auroc, auprc = get_discriminative_score(x_imputed, y, args)
-                # if args.dataset == "hmnist": wandb.log({"test_auroc_round":auroc_round, "test_auprc_round":auprc_round}, step=epoch)
                 wandb.log({"test_auroc":auroc, "test_auprc":auprc}, step=epoch)
                 print(f"Discriminative Score: {auroc:.4f}")
                 

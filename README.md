@@ -21,21 +21,30 @@ First clone the repo `git clone https://github.com/Chemgyu/TimeCIB.git`
 
 
 ## Data Preparation
-Download data to `./data` using the following script: `bash data/load_{hmnist, physionet}.sh`
+Download data to `./data` using the following scripts: `bash data/load_{hmnist, physionet}.sh`. This will download five missing patterns of hmnist data, and physionet data.
 
 Code for rotatedMNIST will be provided soon.
 
+Preprocess data using the following scripts: `python preprocess/preprocess_{hmnist, physionet}.sh`. This will preprocess each dataset, and generate missing_ratio experiments included in the manuscript.
+
+
 ## Reproduce the TimeCIB
 
+### Train
+To train your model, use the following:
 - Retrain on the HMNIST: `python train.py --d hmnist --pn hmnist-TimeCIB --rn reproduce --m timecib --b 0.1 --l 0.5 --clen 1.0 --p norm --ep 40 --dim 128 --imputed forward`
 
-- Retrain on the physionet: `python train.py --d physionet --pn physionet-TimeCIB --rn reproduce --m timecib --b 0.001 --l 0.001 --clen 32 --p norm  --ep 50 --dim 16 --imputed forward`
+- Retrain on the Physionet: `python train.py --d physionet --pn physionet-TimeCIB --rn reproduce --m timecib --b 0.001 --l 0.001 --clen 32 --p norm  --ep 50 --dim 16 --imputed forward`
 
+### Evaluation
 To test your model, use the following.
 - Test on the HMNIST: `python train.py --d hmnist --pn hmnist-TimeCIB --rn reproduce --m timecib --b 0.1 --l 0.5 --clen 1.0 --p norm --ep 40 --dim 128 --imputed forward --dir {path_to_the_model} --test True`
 
-- Test on the physionet: `python train.py --d physionet --pn physionet-TimeCIB --rn reproduce --m timecib --b 0.001 --l 0.001 --clen 32 --p norm  --ep 50 --dim 16 --imputed forward --dir {path_to_the_model} --test True`
+- Test on the Physioinet: `python train.py --d physionet --pn physionet-TimeCIB --rn reproduce --m timecib --b 0.001 --l 0.001 --clen 32 --p norm  --ep 50 --dim 16 --imputed forward --dir {path_to_the_model} --test True`
 
-One can also train/test baseline models (GP-VAE, HI-VAE, VAE). For example, `python train.py --d physionet --pn physionet-Baselines --rn reproduce --m {gpvae, hivae, vae} --b 0.001 --l 0.001 --clen 32 --p {norm, gp}  --ep 50 --dim 16` Make sure to use `--p gp` for GP-VAE.
+### Baselines
+You can also train/test baseline models (GP-VAE, HI-VAE, VAE). 
 
+For example, `python train.py --d physionet --pn physionet-Baselines --rn reproduce --m {gpvae, hivae, vae} --b 0.001 --l 0.001 --clen 32 --p {norm, gp}  --ep 50 --dim 16` 
 
+Make sure to use `--p gp` for GP-VAE.
